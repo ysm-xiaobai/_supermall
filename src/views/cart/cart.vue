@@ -1,13 +1,15 @@
 <template>
-    <h2>购物车</h2>
-  </template>
+  <div class="wrapper">
+    sss
+  </div>
+</template>
   
-  <script>
-      export default {
-          name: "cart"
-      }
-  </script>
-  
-  <style>
-  
-  </style>
+<script>
+export default {
+  name: "cart"
+}
+</script>
+
+<style scoped>
+
+</style>

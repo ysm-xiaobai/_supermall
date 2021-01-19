@@ -3,22 +3,33 @@
     <nav-bar class="home-nav">
       <template v-slot:center>购物街</template>
     </nav-bar>
-    <swiper class="swiper-container">
-      <swiper-item v-for="(item, index) in banners.list" :key="index">
-        <a :href="item.link">
-          <img :src="item.image" alt="">
-        </a>
-      </swiper-item>
-    </swiper>
-    <recommend-view :recommends="recommends.list"></recommend-view>
-    <feature-view></feature-view>
-    <tab-control
-    :titles="['流行','新款','精选']"
-    @tabclick="tabClick"
+    <scroll
+    class="wrapper"
+    ref="scrollobj"
+    :probe-type="3"
+    @scrollevent="contentScroll"
+    :pullup-load="true"
+    @pullingUp="Loadmore"
     >
-    </tab-control>
-    <goodsList :goods="showGoods"></goodsList>
-    <div class="bottom-info">~我是有底线的~</div>
+      <swiper class="swiper-container">
+        <swiper-item v-for="(item, index) in banners.list" :key="index">
+          <a :href="item.link">
+            <img :src="item.image" alt="">
+          </a>
+        </swiper-item>
+      </swiper>
+      <recommend-view :recommends="recommends.list"></recommend-view>
+      <feature-view></feature-view>
+      <tab-control
+      :titles="['流行','新款','精选']"
+      @tabclick="tabClick"
+      class="tabbar"
+      >
+      </tab-control>
+      <goodsList :goods="showGoods"></goodsList>
+      <div class="bottom-info">~我是有底线的~</div>
+    </scroll>
+    <back-top @click.native="backClick" v-show="isShowBackTop"/>
   </div>
 </template>
 
@@ -27,8 +38,11 @@
 
   import NavBar from 'components/common/navbar/Navbar'
   import { Swiper, SwiperItem } from 'components/common/swiper'
+  import Scroll from 'components/common/scroll/Scroll'
+
   import TabControl from 'components/content/tabControl/TabControl'
   import goodsList from 'components/content/goods/goodsList'
+  import backTop from 'components/content/backtop/backTop'
 
   import RecommendView from './childcomps/HomeRecommendView'
   import FeatureView from './childcomps/FeatureView'
@@ -41,7 +55,9 @@
       RecommendView,
       FeatureView,
       TabControl,
-      goodsList
+      goodsList,
+      Scroll,
+      backTop
     },
     data () {
       return {
@@ -52,7 +68,8 @@
           'new':{page: 0, list: []},
           'sell':{page: 0, list: []}
         },
-        currType: 'pop'
+        currType: 'pop',
+        isShowBackTop: false
       }
     },
     created () {
@@ -81,12 +98,23 @@
         getHomeGoods(type, page).then(res => {
           this.goods[type].list.push(...res.data.list)
           this.goods[type].page += 1
+          this.$refs.scrollobj.finishPullUp()
         })
       },
       /*事件监听相关方法*/
       tabClick (index) {
         let typearr = ['pop','new','sell']
         this.currType = typearr[index]
+      },
+      backClick () {
+        this.$refs.scrollobj.scrollTo(0, 0)
+      },
+      contentScroll (position) {
+        this.isShowBackTop = (-position.y) > 800
+      },
+      Loadmore () {
+        this.getHomeGoods(this.currType)
+        this.$refs.scrollobj.scroll.refresh()
       }
     }
   }
@@ -105,10 +133,20 @@
   .swiper-container {
     padding-top: 44px;
   }
+  .tabbar {
+    // position: sticky;
+    top: 44px;
+    background-color: #fff;
+  }
   .bottom-info {
+    width: 100%;
     height: 60px;
     margin-bottom: 49px;
     line-height: 60px;
     text-align: center;
+  }
+  .wrapper {
+    padding-top: 44px;
+    height: calc(100vh - 49px);
   }
 </style>

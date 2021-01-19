@@ -31,7 +31,7 @@ export default {
   .goods {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-around;
-    padding: 4px;
+    justify-content: space-evenly;
+    padding: 2px;
   }
 </style>
