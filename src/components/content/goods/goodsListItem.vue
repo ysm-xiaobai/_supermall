@@ -1,6 +1,6 @@
 <template>
-  <div class="goods_item">
-    <img :src="goodsItem.show.img" alt="">
+  <div class="goods_item" @click="itemClick">
+    <img :src="goodsItem.show.img" alt="" @load="imgload">
     <div class="item_info">
       <p class="title">{{goodsItem.title}}</p>
       <span class="price">{{'￥' + goodsItem.price}}</span>
@@ -10,6 +10,7 @@
 </template>
 
 <script>
+// import Waterfall from 'components/common/waterfall/WaterFall'
 export default {
   name: 'goodsListItem',
   props: {
@@ -19,14 +20,23 @@ export default {
         return {}
       }
     }
+  },
+  methods: {
+    imgload () {
+      this.$bus.$emit('itemImgLoaded')
+    },
+    itemClick () {
+      this.$router.push('/detail/' + this.goodsItem.iid)
+    }
   }
 }
 </script>
 
 <style lang="scss" scoped>
   .goods_item {
-    width: 47%;
-    height: 100%;
+    width: calc(100%/2 - 12px);
+    height: auto;
+    // position: absolute;
   }
   img {
     width: 100%;

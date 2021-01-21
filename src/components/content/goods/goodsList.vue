@@ -4,6 +4,7 @@
     v-for="(item, index) of goods"
     :goods-item="item"
     :key="index"
+    ref="goodsitem"
     >
     </goods-list-item>
   </div>
@@ -11,6 +12,7 @@
 
 <script>
 import goodsListItem from './goodsListItem'
+
 export default {
   name: 'goodsList',
   props: {
@@ -21,6 +23,13 @@ export default {
       }
     }
   },
+  // watch: {
+  //   goods () {
+  //     this.$nextTick(() => {
+  //       this.$refs.goodsitem[0].loadImg('.goods',8)
+  //     })
+  //   }
+  // },
   components: {
     goodsListItem
   }
@@ -30,8 +39,11 @@ export default {
 <style lang="scss" scoped>
   .goods {
     display: flex;
-    flex-wrap: wrap;
+    flex-flow: row wrap;
     justify-content: space-evenly;
-    padding: 2px;
+  }
+  button {
+    width: 150px;
+    height: 50px;
   }
 </style>
